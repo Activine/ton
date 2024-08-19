@@ -60,6 +60,10 @@ contract Lottery with Deployable {
         // require(msg.amount == ton("5"), "iSendParametersSendParametersncorrect token amount");
         self.tokenBalance = self.tokenBalance + msg.amount;
         dump(contractAddress(init));
+        dump(contractAddress(init));
+        dump(contractAddress(init));
+        dump(contractAddress(init));
+        
         send(SendParameters{
             to: contractAddress(init),
             body: Transfer{
@@ -142,7 +146,6 @@ contract Lottery with Deployable {
         let init: StateInit = initOf TokenWallet(myAddress(), self.paymentToken, myAddress());
         dump(match);
         dump(winner);
-        dump(winner);
 
         if(match == 1) {
         dump(match);
@@ -159,16 +162,23 @@ contract Lottery with Deployable {
                 value: ton("0.5"),
                 mode: SendIgnoreErrors
             });
+        } else if(match == 3) {
+        dump(match);
+            send(SendParameters{
+                to: contractAddress(init),
+                body: Transfer{
+                    query_id: queryId, 
+                    amount: self.threeMatch, 
+                    destination: winner, 
+                    response_destination: winner,
+                    custom_payload: null,
+                    forward_ton_amount: 0
+                }.toCell(),
+                // body: Transfer{amount: self.threeMatch, to: winner}.toCell(),
+                value: ton("0.5"),
+                mode: SendIgnoreErrors
+            });
         }
-        // } else if(match == 3) {
-        // dump(match);
-        //     send(SendParameters{
-        //         to: contractAddress(init),
-        //         body: Transfer{amount: self.threeMatch, to: winner}.toCell(),
-        //         value: ton("0.5"),
-        //         mode: SendIgnoreErrors
-        //     });
-        // }
     }
 
     get fun threeRandom(): RoundData {
