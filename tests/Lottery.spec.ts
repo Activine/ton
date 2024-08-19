@@ -181,7 +181,7 @@ describe('Lottery', () => {
 
         const buyLotteryTicket = await lottery.send(
             user.getSender(),
-            { value: toNano('2') },
+            { value: toNano('1') },
             {
                 $$type: 'BuyTicket',
                 query_id: 0n,
@@ -199,7 +199,7 @@ describe('Lottery', () => {
 
         const buyLotteryTicket1 = await lottery.send(
             user.getSender(),
-            { value: toNano('2') },
+            { value: toNano('1') },
             {
                 $$type: 'BuyTicket',
                 query_id: 0n,
@@ -207,15 +207,15 @@ describe('Lottery', () => {
                 destination: user.address,
                 response_destination: user.address,
                 custom_payload: beginCell().endCell(),
-                forward_ton_amount: toNano('0.3'),
+                forward_ton_amount: toNano('0.1'),
                 contentNft: contentNFT,
-                value: toNano('0.4'),
+                value: toNano('0.1'),
             },
         );
 
         const buyLotteryTicket2 = await lottery.send(
             user.getSender(),
-            { value: toNano('2') },
+            { value: toNano('1') },
             {
                 $$type: 'BuyTicket',
                 query_id: 0n,
@@ -223,15 +223,15 @@ describe('Lottery', () => {
                 destination: user.address,
                 response_destination: user.address,
                 custom_payload: beginCell().endCell(),
-                forward_ton_amount: toNano('0.3'),
+                forward_ton_amount: toNano('0.1'),
                 contentNft: contentNFT,
-                value: toNano('0.4'),
+                value: toNano('0.1'),
             },
         );
 
         const buyLotteryTicket3 = await lottery.send(
             user.getSender(),
-            { value: toNano('2') },
+            { value: toNano('1') },
             {
                 $$type: 'BuyTicket',
                 query_id: 0n,
@@ -239,15 +239,15 @@ describe('Lottery', () => {
                 destination: user.address,
                 response_destination: user.address,
                 custom_payload: beginCell().endCell(),
-                forward_ton_amount: toNano('0.3'),
+                forward_ton_amount: toNano('0.1'),
                 contentNft: contentNFT,
-                value: toNano('0.4'),
+                value: toNano('0.1'),
             },
         );
 
         const buyLotteryTicket4 = await lottery.send(
             user.getSender(),
-            { value: toNano('2') },
+            { value: toNano('1') },
             {
                 $$type: 'BuyTicket',
                 query_id: 0n,
@@ -255,15 +255,15 @@ describe('Lottery', () => {
                 destination: user.address,
                 response_destination: user.address,
                 custom_payload: beginCell().endCell(),
-                forward_ton_amount: toNano('0.3'),
+                forward_ton_amount: toNano('0.1'),
                 contentNft: contentNFT,
-                value: toNano('0.4'),
+                value: toNano('0.1'),
             },
         );
 
         const buyLotteryTicket5 = await lottery.send(
             user.getSender(),
-            { value: toNano('2') },
+            { value: toNano('1') },
             {
                 $$type: 'BuyTicket',
                 query_id: 0n,
@@ -271,12 +271,12 @@ describe('Lottery', () => {
                 destination: user.address,
                 response_destination: user.address,
                 custom_payload: beginCell().endCell(),
-                forward_ton_amount: toNano('0.3'),
+                forward_ton_amount: toNano('0.1'),
                 contentNft: contentNFT,
-                value: toNano('0.4'),
+                value: toNano('0.1'),
             },
         );
-        // console.log(buyLotteryTicket.events);
+        console.log(buyLotteryTicket.events);
 
         userWalletData = await userWallet.getGetWalletData();
         let lotteryWalletData = await lotteryWallet.getGetWalletData();
