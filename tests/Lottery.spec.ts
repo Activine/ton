@@ -215,6 +215,7 @@ describe('Lottery', () => {
             { value: toNano('0.1') },
             {
                 $$type: 'CheckTicket',
+                query_id: 0n,
                 index: 0n,
             },
         );

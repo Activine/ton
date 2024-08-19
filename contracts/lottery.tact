@@ -92,7 +92,10 @@ contract Lottery with Deployable {
         let initNFT: StateInit = initOf NftItem(self.nftCollection, msg.index, myAddress());
         send(SendParameters{
             to: contractAddress(initNFT),
-            body: "ticketStatus".asComment(),
+            body: TicketStatus{
+                query_id: msg.query_id,
+                getRewards: false
+            }.toCell(),
             value: ton("0.2"),
             mode: SendIgnoreErrors
         });
@@ -106,7 +109,7 @@ contract Lottery with Deployable {
 
             send(SendParameters{
                 to: contractAddress(initNFT),
-                body: SetLotteryData{first: data.first, second: data.second, third: data.third}.toCell(),
+                body: SetLotteryData{first: data.first, second: data.second, third: data.third, match: data.match}.toCell(),
                 value: ton("0.2"),
                 mode: SendIgnoreErrors
             });
@@ -116,6 +119,56 @@ contract Lottery with Deployable {
             // }
         }
         // require(msg.status, "ticket used");
+    }
+
+    receive(msg: ClaimReward) {
+        let initNFT: StateInit = initOf NftItem(self.nftCollection, msg.index, myAddress());
+        send(SendParameters{
+            to: contractAddress(initNFT),
+            body: TicketStatus{
+                query_id: msg.query_id,
+                getRewards: true
+            }.toCell(),
+            value: ton("0.2"),
+            mode: SendIgnoreErrors
+        });
+    }
+
+    receive(msg: ClaimResponse) {
+        self.setReward(msg.match, msg.winner, msg.query_id);
+    }
+
+    fun setReward(match: Int, winner: Address, queryId: Int) {
+        let init: StateInit = initOf TokenWallet(myAddress(), self.paymentToken, myAddress());
+        dump(match);
+        dump(winner);
+        dump(winner);
+
+        if(match == 1) {
+        dump(match);
+            send(SendParameters{
+                to: contractAddress(init),
+                body: Transfer{
+                    query_id: queryId, 
+                    amount: self.twoMatch, 
+                    destination: winner, 
+                    response_destination: winner,
+                    custom_payload: null,
+                    forward_ton_amount: 0
+                }.toCell(),
+                value: ton("0.5"),
+                mode: SendIgnoreErrors
+            });
+        }
+        // } else if(match == 3) {
+        // dump(match);
+        //     send(SendParameters{
+        //         to: contractAddress(init),
+        //         body: Transfer{amount: self.threeMatch, to: winner}.toCell(),
+        //         value: ton("0.5"),
+        //         mode: SendIgnoreErrors
+        //     });
+        // }
     }
 
     get fun threeRandom(): RoundData {

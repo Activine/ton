@@ -16,6 +16,7 @@ struct Numbers {
     first: Int;
     second: Int;
     third: Int;
+    match: Int;
 }
 
 struct ItemLotteryData {
@@ -91,7 +92,7 @@ contract NftItem with NftStandart {
     content: Cell;
     operator: Address;
     ticketStatus: Bool = false;
-    numbers: Numbers = Numbers{first: 0, second: 0, third: 0};
+    numbers: Numbers = Numbers{first: 0, second: 0, third: 0, match: 0};
 
     init(collection: Address, index: Int, operator: Address) {
         self.collection = collection;
@@ -133,13 +134,19 @@ contract NftItem with NftStandart {
         require(sender() == self.operator, "Operator only");
         if(!self.ticketStatus) {
             self.ticketStatus = true;
-            self.numbers = Numbers{first: msg.first, second: msg.second, third: msg.third};
+            self.numbers = Numbers{first: msg.first, second: msg.second, third: msg.third, match: msg.match};
         }
     }
 
-    receive("ticketStatus") {
-        // dump(self.ticketStatus);
-        self.reply(GetTicketStatus{status: self.ticketStatus, index: self.index}.toCell());
+    receive(msg: TicketStatus) {
+        dump(self.ticketStatus);
+        if(msg.getRewards) {
+            if(self.numbers.match != 0) {
+                self.reply(ClaimResponse{winner: self.owner, match: self.numbers.match, query_id: msg.query_id}.toCell());
+            }
+        } else {
+            self.reply(GetTicketStatus{status: self.ticketStatus, index: self.index, query_id: msg.query_id}.toCell());
+        }
     }
 
     get fun lottery_data(): ItemLotteryData {

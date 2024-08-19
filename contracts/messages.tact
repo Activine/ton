@@ -125,6 +125,7 @@ message SetLotteryData{
     first: Int as uint8;
     second: Int as uint8;
     third: Int as uint8;
+    match: Int as uint8;
 }
 
 // lottery
@@ -155,10 +156,28 @@ message BuyTicket {
 }
 
 message CheckTicket {
+    query_id: Int as uint64;
     index: Int as uint256;
 }
 
 message GetTicketStatus {
+    query_id: Int as uint64;
     status: Bool;
     index: Int as uint256;
+}
+
+message TicketStatus {
+    getRewards: Bool;
+    query_id: Int as uint64;
+}
+
+message ClaimReward {
+    query_id: Int as uint64;
+    index: Int as uint256;
+}
+
+message ClaimResponse {
+    query_id: Int as uint64;
+    winner: Address;
+    match: Int as uint8;
 }
