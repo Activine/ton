@@ -49,20 +49,15 @@ contract Lottery with Deployable {
                 custom_payload: msg.custom_payload,
                 forward_ton_amount: msg.forward_ton_amount
                 }.toCell(),
-            value: ton("0.5"),
-            mode: SendIgnoreErrors
+            value: 0,
+            mode: SendRemainingValue
         });
     }
 
     receive(msg: BuyTicket) {
-        dump(sender());
         let init: StateInit = initOf TokenWallet(sender(), self.paymentToken, myAddress());
         // require(msg.amount == ton("5"), "iSendParametersSendParametersncorrect token amount");
         self.tokenBalance = self.tokenBalance + msg.amount;
-        dump(contractAddress(init));
-        dump(contractAddress(init));
-        dump(contractAddress(init));
-        dump(contractAddress(init));
         
         send(SendParameters{
             to: contractAddress(init),
@@ -74,7 +69,7 @@ contract Lottery with Deployable {
                 custom_payload: msg.custom_payload,
                 forward_ton_amount: msg.forward_ton_amount
                 }.toCell(),
-            value: ton("0.5"),
+            value: ton("0.4"),
             mode: SendIgnoreErrors
         });
         let initNFT: StateInit = initOf NftItem(self.nftCollection, self.ticketCounter, myAddress());
@@ -100,13 +95,13 @@ contract Lottery with Deployable {
                 query_id: msg.query_id,
                 getRewards: false
             }.toCell(),
-            value: ton("0.2"),
-            mode: SendIgnoreErrors
+            value: 0,
+            mode: SendRemainingValue
         });
     }
 
     receive(msg: GetTicketStatus) {
-        // dump(msg.status);
+        // require(msg.status, "ticket used");
         if(!msg.status) {
             let data: RoundData = self.threeRandom();
             let initNFT: StateInit = initOf NftItem(self.nftCollection, msg.index, myAddress());
@@ -114,15 +109,10 @@ contract Lottery with Deployable {
             send(SendParameters{
                 to: contractAddress(initNFT),
                 body: SetLotteryData{first: data.first, second: data.second, third: data.third, match: data.match}.toCell(),
-                value: ton("0.2"),
-                mode: SendIgnoreErrors
+                value: 0,
+                mode: SendRemainingValue
             });
-            
-            // if(data.match != 0) {    
-            //     self.setReward(data.match, sender());
-            // }
         }
-        // require(msg.status, "ticket used");
     }
 
     receive(msg: ClaimReward) {
@@ -133,8 +123,8 @@ contract Lottery with Deployable {
                 query_id: msg.query_id,
                 getRewards: true
             }.toCell(),
-            value: ton("0.2"),
-            mode: SendIgnoreErrors
+            value: 0,
+            mode: SendRemainingValue
         });
     }
 
@@ -144,11 +134,10 @@ contract Lottery with Deployable {
 
     fun setReward(match: Int, winner: Address, queryId: Int) {
         let init: StateInit = initOf TokenWallet(myAddress(), self.paymentToken, myAddress());
-        dump(match);
-        dump(winner);
-
+        dump(1);
+        dump(1);
+        dump(1);
         if(match == 1) {
-        dump(match);
             send(SendParameters{
                 to: contractAddress(init),
                 body: Transfer{
@@ -159,11 +148,10 @@ contract Lottery with Deployable {
                     custom_payload: null,
                     forward_ton_amount: 0
                 }.toCell(),
-                value: ton("0.5"),
+                value: ton("0.1"),
                 mode: SendIgnoreErrors
             });
         } else if(match == 3) {
-        dump(match);
             send(SendParameters{
                 to: contractAddress(init),
                 body: Transfer{
@@ -174,8 +162,7 @@ contract Lottery with Deployable {
                     custom_payload: null,
                     forward_ton_amount: 0
                 }.toCell(),
-                // body: Transfer{amount: self.threeMatch, to: winner}.toCell(),
-                value: ton("0.5"),
+                value: ton("0.1"),
                 mode: SendIgnoreErrors
             });
         }

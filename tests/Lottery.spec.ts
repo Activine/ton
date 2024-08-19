@@ -189,11 +189,13 @@ describe('Lottery', () => {
                 destination: user.address,
                 response_destination: user.address,
                 custom_payload: beginCell().endCell(),
-                forward_ton_amount: toNano('0.3'),
+                forward_ton_amount: toNano('0.1'),
                 contentNft: contentNFT,
-                value: toNano('0.4'),
+                value: toNano('0.1'),
             },
         );
+
+        console.log('eventseventseventseventseventseventseventsevents', buyLotteryTicket.events);
 
         const buyLotteryTicket1 = await lottery.send(
             user.getSender(),
@@ -323,13 +325,25 @@ describe('Lottery', () => {
 
         const claimReward = await lottery.send(
             user.getSender(),
-            { value: toNano('1') },
+            { value: toNano('0.1') },
             {
                 $$type: 'ClaimReward',
                 query_id: 0n,
                 index: 0n,
             },
         );
+        // console.log(claimReward.events);
+
+        const claimReward2 = await lottery.send(
+            user.getSender(),
+            { value: toNano('0.2') },
+            {
+                $$type: 'ClaimReward',
+                query_id: 0n,
+                index: 0n,
+            },
+        );
+        // console.log(claimReward2.events);
 
         userWalletData = await userWallet.getGetWalletData();
         lotteryWalletData = await lotteryWallet.getGetWalletData();

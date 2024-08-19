@@ -97,9 +97,6 @@ contract TokenMaster with OwnableTransferable, Deployable {
     }
 
     get fun get_wallet_address(owner_address: Address): Address {
-        dump(owner_address);
-        dump(myAddress());
-        dump(self.operator);
         let init: StateInit = initOf TokenWallet(owner_address, myAddress(), self.operator);
         return contractAddress(init);
     }

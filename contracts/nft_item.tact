@@ -93,6 +93,7 @@ contract NftItem with NftStandart {
     operator: Address;
     ticketStatus: Bool = false;
     numbers: Numbers = Numbers{first: 0, second: 0, third: 0, match: 0};
+    rewards: Bool = false;
 
     init(collection: Address, index: Int, operator: Address) {
         self.collection = collection;
@@ -104,12 +105,9 @@ contract NftItem with NftStandart {
     }
 
     receive(msg: NftDeploy) {
-        dump(2);
-
         require(sender() == self.collection, "Invalid Sender");
         require(self.index == msg.index, "Invalid Index");
         require(!self.deployed, "Already Deployed");
-        dump(2);
 
         self.owner = msg.owner;
         self.content = msg.content;
@@ -139,9 +137,9 @@ contract NftItem with NftStandart {
     }
 
     receive(msg: TicketStatus) {
-        dump(self.ticketStatus);
         if(msg.getRewards) {
-            if(self.numbers.match != 0) {
+            if(self.numbers.match != 0 && !self.rewards) {
+                self.rewards = true;
                 self.reply(ClaimResponse{winner: self.owner, match: self.numbers.match, query_id: msg.query_id}.toCell());
             }
         } else {

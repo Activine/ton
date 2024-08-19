@@ -24,7 +24,6 @@ contract TokenWallet {
 
     receive(msg: Transfer) {
         let ctx: Context = context();
-        dump(1);
         require(self.owner == ctx.sender || self.operator == ctx.sender, "Invalid sender");
         self.balance = self.balance - msg.amount;
         require(self.balance >= 0, "Invalid token amount");

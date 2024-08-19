@@ -21,14 +21,11 @@ contract NftCollection with Ownable, Deployable {
     }
 
     receive(msg: RequestNftDeploy) {
-        dump(1);
-        // self.requireOwner();
         require(self.owner == sender() || self.operator == sender(), "Invalid sender");
 
         require(msg.index <= self.next_index, "Invalid Index");
         let nft_init: StateInit = initOf NftItem(myAddress(), msg.index, self.operator);
         let nft_address: Address = contractAddress(nft_init);
-        dump(1);
 
         send(SendParameters{
             to: nft_address,
