@@ -173,23 +173,12 @@ describe('Lottery', () => {
         );
 
         let userWalletData = await userWallet.getGetWalletData();
-        // console.log(userWalletData);
         console.log('user token balance', userWalletData.balance);
 
         expect(userWalletData.owner.equals(user.address)).toBeTruthy();
         expect(userWalletData.master.equals(jettonMaster.address)).toBeTruthy();
         expect(userWalletData.balance).toEqual(toNano('100'));
 
-        // query_id: Int as uint64;
-        // amount: Int as coins;
-        // destination: Address;
-        // response_destination: Address;
-        // custom_payload: Cell?;
-        // forward_ton_amount: Int as coins;
-        // contentNft: Cell;
-        // value: Int as coins;
-
-        //buy lottery ticket
         const buyLotteryTicket = await lottery.send(
             user.getSender(),
             { value: toNano('2') },
@@ -206,7 +195,7 @@ describe('Lottery', () => {
             },
         );
 
-        console.log(buyLotteryTicket.events);
+        // console.log(buyLotteryTicket.events);
 
         userWalletData = await userWallet.getGetWalletData();
         let lotteryWalletData = await lotteryWallet.getGetWalletData();
@@ -215,9 +204,22 @@ describe('Lottery', () => {
         const nft0 = blockchain.openContract(NftItem.fromAddress(nft0Address));
         let nftData = await nft0.getGetNftData();
 
-        console.log(nftData);
+        // console.log(nftData);
+        console.log('lottery status', await nft0.getLotteryData());
 
         console.log('userWalletData.balance', userWalletData.balance);
         console.log('lotteryWalletData.balance', lotteryWalletData.balance);
+
+        const checkTicket = await lottery.send(
+            user.getSender(),
+            { value: toNano('0.1') },
+            {
+                $$type: 'CheckTicket',
+                index: 0n,
+            },
+        );
+
+        console.log(checkTicket.events);
+        console.log('lottery status', await nft0.getLotteryData());
     });
 });

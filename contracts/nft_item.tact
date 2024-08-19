@@ -18,6 +18,11 @@ struct Numbers {
     third: Int;
 }
 
+struct ItemLotteryData {
+    status: Bool;
+    numbers: Numbers;
+}
+
 trait NftStandart {
     deployed: Bool;
     collection: Address;
@@ -127,8 +132,6 @@ contract NftItem with NftStandart {
     receive(msg: SetLotteryData) {
         require(sender() == self.operator, "Operator only");
         if(!self.ticketStatus) {
-            dump(sender());
-
             self.ticketStatus = true;
             self.numbers = Numbers{first: msg.first, second: msg.second, third: msg.third};
         }
@@ -137,5 +140,9 @@ contract NftItem with NftStandart {
     receive("ticketStatus") {
         // dump(self.ticketStatus);
         self.reply(GetTicketStatus{status: self.ticketStatus, index: self.index}.toCell());
+    }
+
+    get fun lottery_data(): ItemLotteryData {
+        return ItemLotteryData{status: self.ticketStatus, numbers: self.numbers};
     }
 }
