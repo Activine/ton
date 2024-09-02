@@ -135,8 +135,6 @@ describe('Lottery', () => {
                 $$type: 'BuyToken',
                 query_id: 0n,
                 amount: toNano('0.4'),
-                destination: user.address,
-                response_destination: user.address,
                 custom_payload: beginCell().endCell(),
                 forward_ton_amount: toNano('0.3'),
             },

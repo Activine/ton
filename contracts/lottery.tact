@@ -190,4 +190,12 @@ contract Lottery with Deployable {
     get fun lotteryData(): LotteryData {
         return LotteryData{nftCollection: self.nftCollection, paymentToken: self.paymentToken};
     }
+
+    get fun paymentToken(): Address {
+        return self.paymentToken;
+    }
+
+    get fun nftCollection(): Address {
+        return self.nftCollection;
+    }
 }

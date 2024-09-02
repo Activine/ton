@@ -55,4 +55,12 @@ contract NftCollection with Ownable, Deployable {
     get fun get_nft_content(index: Int, individual_content: Cell): Cell {
         return individual_content;
     }
+
+    get fun ownerCollection() : Address {
+        return self.owner;
+    }   
+
+    get fun operator() : Address {
+        return self.operator;
+    }   
 }

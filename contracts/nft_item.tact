@@ -150,4 +150,12 @@ contract NftItem with NftStandart {
     get fun lottery_data(): ItemLotteryData {
         return ItemLotteryData{status: self.ticketStatus, numbers: self.numbers};
     }
+
+    get fun owner() : Address { 
+        return self.owner;
+    }
+
+    get fun operator() : Address {
+        return self.operator;
+    }
 }

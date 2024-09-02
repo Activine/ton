@@ -12,11 +12,12 @@ export async function run(provider: NetworkProvider) {
         image: 'https://www.pngall.com/wp-content/uploads/15/Fire-Flame-PNG-Image-HD.png',
     };
     let content = buildOnchainMetadata(jettonParams);
-    let owner = address('0QAxMBACnTtF5DUG3jwpEw5gxLF7giTsZIDwI5ue58JkCG0o');
+    let owner = address('0QCo2Iu333eSAxgzuoIMnNmphweSo87oQVJDiVOevi0pvzwz');
+    const operator = address('EQDeaZ1X1c0PZi4G68YHEzlV3i4GnbBu4RIZbesfnHFF3HRV');
 
     console.log('sender', provider.sender());
     console.log('owner', owner);
-    const master = provider.open(await TokenMaster.fromInit(owner, content, owner));
+    const master = provider.open(await TokenMaster.fromInit(owner, content, operator));
 
     await master.send(
         provider.sender(),
@@ -31,25 +32,25 @@ export async function run(provider: NetworkProvider) {
 
     await provider.waitForDeploy(master.address);
 
-    await master.send(
-        provider.sender(),
-        { value: toNano('1.2') },
-        {
-            $$type: 'Transfer',
-            query_id: 5n,
-            amount: toNano(20),
-            destination: owner,
-            response_destination: owner,
-            custom_payload: beginCell().endCell(),
-            forward_ton_amount: toNano(1),
-            // forward_payload: beginCell().storeUint(0, 32).storeStringTail('hello owner1').endCell(),
-        },
-    );
+    // await master.send(
+    //     provider.sender(),
+    //     { value: toNano('1.2') },
+    //     {
+    //         $$type: 'Transfer',
+    //         query_id: 5n,
+    //         amount: toNano(20),
+    //         destination: owner,
+    //         response_destination: owner,
+    //         custom_payload: beginCell().endCell(),
+    //         forward_ton_amount: toNano(1),
+    //         // forward_payload: beginCell().storeUint(0, 32).storeStringTail('hello owner1').endCell(),
+    //     },
+    // );
 
-    const owner_wallet = provider.open(await TokenWallet.fromInit(owner, master.address, owner));
-    console.log('owner_wallet', owner_wallet);
+    // const owner_wallet = provider.open(await TokenWallet.fromInit(owner, master.address, owner));
+    // console.log('owner_wallet', owner_wallet);
 
-    console.log((await owner_wallet.getGetWalletData()).balance);
+    // console.log((await owner_wallet.getGetWalletData()).balance);
 
     // run methods on `master`
 }

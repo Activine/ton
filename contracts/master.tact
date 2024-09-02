@@ -100,4 +100,12 @@ contract TokenMaster with OwnableTransferable, Deployable {
         let init: StateInit = initOf TokenWallet(owner_address, myAddress(), self.operator);
         return contractAddress(init);
     }
+
+    get fun ownerMaster(): Address {
+        return self.owner;
+    }
+
+    get fun operator(): Address {
+        return self.operator;
+    }
 }

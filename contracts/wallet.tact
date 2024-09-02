@@ -112,4 +112,12 @@ contract TokenWallet {
     get fun get_wallet_data(): WalletData {
         return WalletData{balance: self.balance, owner: self.owner, master: self.master, code: (initOf TokenWallet(self.owner, self.master, self.operator)).code};
     }
+
+    get fun owner(): Address {
+        return self.owner;
+    }
+
+    get fun operator(): Address {
+        return self.operator;
+    }
 }
