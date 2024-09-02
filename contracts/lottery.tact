@@ -20,9 +20,11 @@ contract Lottery with Deployable {
     const threeMatch: Int = ton("15");
     const priceForToken: Int = ton("1.5");
     const priceForTicket: Int = ton("5");
+    const MinTonForStorage: Int = ton("0.01"); 
 
     nftCollection: Address;
     paymentToken: Address;
+    owner: Address;
     tokenBalance: Int = 0;
     ticketCounter: Int = 0;
    
@@ -30,6 +32,7 @@ contract Lottery with Deployable {
         self.nftCollection = myAddress();
         self.paymentToken = myAddress();
         self.tokenBalance = 0;
+        self.owner = sender();
     }
 
     receive(msg: SetData) {
@@ -63,7 +66,6 @@ contract Lottery with Deployable {
 
     receive(msg: BuyTicket) {
         let init: StateInit = initOf TokenWallet(sender(), self.paymentToken, myAddress());
-        // require(msg.amount == ton("5"), "iSendParametersSendParametersncorrect token amount");
         self.tokenBalance = self.tokenBalance + self.priceForTicket;
         send(SendParameters{
             to: contractAddress(init),
@@ -138,10 +140,20 @@ contract Lottery with Deployable {
         self.setReward(msg.match, msg.winner, msg.query_id);
     }
 
+    receive(msg: Withdraw) {
+        require(sender() == self.owner, "Only owner is allowed to withdraw");
+        let amount: Int = min(msg.amount, myBalance() - context().value - self.MinTonForStorage);
+        require(amount > 0, "Insufficient balance");
+        send(SendParameters{
+            to: sender(),
+            bounce: true,
+            value: amount,
+            mode: SendRemainingValue + SendIgnoreErrors
+        });
+    }
+
     fun setReward(match: Int, winner: Address, queryId: Int) {
         let init: StateInit = initOf TokenWallet(myAddress(), self.paymentToken, myAddress());
-        dump(1);
-        dump(1);
         dump(1);
         if(match == 1) {
             send(SendParameters{

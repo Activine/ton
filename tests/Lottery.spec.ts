@@ -301,38 +301,38 @@ describe('Lottery', () => {
         // console.log('lottery status', await nft0.getLotteryData());
         console.log('userWalletData.balance', userWalletData.balance);
         console.log('lotteryWalletData.balance', lotteryWalletData.balance);
-        // const checkTicket = await lottery.send(
-        //     user.getSender(),
-        //     { value: toNano('0.1') },
-        //     {
-        //         $$type: 'CheckTicket',
-        //         query_id: 0n,
-        //         index: 0n,
-        //     },
-        // );
-        // const checkTicket1 = await lottery.send(
-        //     user.getSender(),
-        //     { value: toNano('0.1') },
-        //     {
-        //         $$type: 'CheckTicket',
-        //         query_id: 0n,
-        //         index: 1n,
-        //     },
-        // );
-        // console.log(checkTicket.events);
-        // console.log('lottery status nft0', await nft0.getLotteryData());
+        const checkTicket = await lottery.send(
+            user.getSender(),
+            { value: toNano('0.1') },
+            {
+                $$type: 'CheckTicket',
+                query_id: 0n,
+                index: 0n,
+            },
+        );
+        const checkTicket1 = await lottery.send(
+            user.getSender(),
+            { value: toNano('0.1') },
+            {
+                $$type: 'CheckTicket',
+                query_id: 0n,
+                index: 1n,
+            },
+        );
+        console.log(checkTicket.events);
+        console.log('lottery status nft0', await nft0.getLotteryData());
         // console.log('userWalletData.balance', userWalletData.balance);
         // console.log('lotteryWalletData.balance', lotteryWalletData.balance);
-        // const claimReward = await lottery.send(
-        //     user.getSender(),
-        //     { value: toNano('0.1') },
-        //     {
-        //         $$type: 'ClaimReward',
-        //         query_id: 0n,
-        //         index: 0n,
-        //     },
-        // );
-        // // console.log(claimReward.events);
+        const claimReward = await lottery.send(
+            user.getSender(),
+            { value: toNano('0.5') },
+            {
+                $$type: 'ClaimReward',
+                query_id: 0n,
+                index: 0n,
+            },
+        );
+        console.log(claimReward.events);
         // const claimReward2 = await lottery.send(
         //     user.getSender(),
         //     { value: toNano('0.2') },
@@ -343,10 +343,26 @@ describe('Lottery', () => {
         //     },
         // );
         // // console.log(claimReward2.events);
-        // userWalletData = await userWallet.getGetWalletData();
-        // lotteryWalletData = await lotteryWallet.getGetWalletData();
-        // console.log('lottery status nft0', await nft0.getLotteryData());
-        // console.log('userWalletData.balance', userWalletData.balance);
-        // console.log('lotteryWalletData.balance', lotteryWalletData.balance);
+        userWalletData = await userWallet.getGetWalletData();
+        lotteryWalletData = await lotteryWallet.getGetWalletData();
+        console.log('lottery status nft0', await nft0.getLotteryData());
+        console.log('userWalletData.balance', userWalletData.balance);
+        console.log('lotteryWalletData.balance', lotteryWalletData.balance);
+        console.log('deployer', await deployer.getBalance());
+
+        let withdraw = await lottery.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.1'),
+            },
+            {
+                $$type: 'Withdraw',
+                amount: toNano('5'),
+            },
+        );
+
+        console.log(withdraw.events);
+        console.log('lottery.getBalance', await lottery.getBalance());
+        console.log('deployer', await deployer.getBalance());
     });
 });

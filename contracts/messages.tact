@@ -145,7 +145,6 @@ message BuyToken {
 
 message BuyTicket {
     query_id: Int as uint64;
-    // amount: Int as coins;
     destination: Address;
     response_destination: Address;
     custom_payload: Cell?;
@@ -180,4 +179,8 @@ message ClaimResponse {
     query_id: Int as uint64;
     winner: Address;
     match: Int as uint8;
+}
+
+message Withdraw {
+    amount: Int as coins;
 }
