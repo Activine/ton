@@ -158,4 +158,8 @@ contract NftItem with NftStandart {
     get fun operator() : Address {
         return self.operator;
     }
+
+    get fun balance(): Int {
+        return myBalance();
+    }
 }

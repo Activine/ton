@@ -22,15 +22,14 @@ contract NftCollection with Ownable, Deployable {
 
     receive(msg: RequestNftDeploy) {
         require(self.owner == sender() || self.operator == sender(), "Invalid sender");
-
         require(msg.index <= self.next_index, "Invalid Index");
         let nft_init: StateInit = initOf NftItem(myAddress(), msg.index, self.operator);
         let nft_address: Address = contractAddress(nft_init);
 
         send(SendParameters{
             to: nft_address,
-            value: msg.amount,
-            mode: SendPayGasSeparately,
+            value: 0,
+            mode: SendRemainingValue,
             bounce: false,
             data: nft_init.data,
             code: nft_init.code,
@@ -62,5 +61,9 @@ contract NftCollection with Ownable, Deployable {
 
     get fun operator() : Address {
         return self.operator;
-    }   
+    }  
+    
+    get fun balance(): Int {
+        return myBalance();
+    } 
 }

@@ -35,6 +35,12 @@ contract Lottery with Deployable {
     receive(msg: SetData) {
         self.nftCollection = msg.nftAddress;
         self.paymentToken = msg.jettonAddress;
+        send(SendParameters{
+            to: sender(),
+            body: emptyCell(), 
+            value: 0,
+            mode: SendRemainingValue
+        });
     }
 
     receive(msg: BuyToken) {
@@ -47,29 +53,30 @@ contract Lottery with Deployable {
                 destination: sender(), 
                 response_destination: sender(),
                 custom_payload: msg.custom_payload,
-                forward_ton_amount: msg.forward_ton_amount
+                forward_ton_amount: msg.forward_ton_amount,
+                forward_payload: msg.forward_payload
                 }.toCell(),
-            value: 0,
-            mode: SendRemainingValue
+            value: context().value - self.priceForToken,
+            mode: SendIgnoreErrors
         });
     }
 
     receive(msg: BuyTicket) {
         let init: StateInit = initOf TokenWallet(sender(), self.paymentToken, myAddress());
         // require(msg.amount == ton("5"), "iSendParametersSendParametersncorrect token amount");
-        self.tokenBalance = self.tokenBalance + msg.amount;
-        
+        self.tokenBalance = self.tokenBalance + self.priceForTicket;
         send(SendParameters{
             to: contractAddress(init),
             body: Transfer{
                 query_id: msg.query_id, 
                 amount: self.priceForTicket, 
                 destination: myAddress(), 
-                response_destination: myAddress(),
+                response_destination: sender(),
                 custom_payload: msg.custom_payload,
-                forward_ton_amount: msg.forward_ton_amount
+                forward_ton_amount: msg.forward_ton_amount,
+                forward_payload: msg.forward_payload
                 }.toCell(),
-            value: ton("0.4"),
+            value: ton("0.06"),
             mode: SendIgnoreErrors
         });
         let initNFT: StateInit = initOf NftItem(self.nftCollection, self.ticketCounter, myAddress());
@@ -77,11 +84,10 @@ contract Lottery with Deployable {
             to: self.nftCollection,
             body: RequestNftDeploy{
                 index: self.ticketCounter,
-                amount: msg.value,
                 owner: sender(),
                 content: msg.contentNft
                 }.toCell(),
-            value: ton("0.5"),
+            value: ton("0.06"),
             mode: SendIgnoreErrors
         });
         self.ticketCounter = self.ticketCounter + 1;
@@ -146,7 +152,8 @@ contract Lottery with Deployable {
                     destination: winner, 
                     response_destination: winner,
                     custom_payload: null,
-                    forward_ton_amount: 0
+                    forward_ton_amount: 0,
+                    forward_payload: emptyCell().asSlice()
                 }.toCell(),
                 value: ton("0.1"),
                 mode: SendIgnoreErrors
@@ -160,7 +167,8 @@ contract Lottery with Deployable {
                     destination: winner, 
                     response_destination: winner,
                     custom_payload: null,
-                    forward_ton_amount: 0
+                    forward_ton_amount: 0,
+                    forward_payload: emptyCell().asSlice()
                 }.toCell(),
                 value: ton("0.1"),
                 mode: SendIgnoreErrors
@@ -197,5 +205,9 @@ contract Lottery with Deployable {
 
     get fun nftCollection(): Address {
         return self.nftCollection;
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }

@@ -7,7 +7,7 @@ message(0x0f817ea5) Transfer {
     response_destination: Address;
     custom_payload: Cell?;
     forward_ton_amount: Int as coins;
-    // forward_payload: Slice as remaining;
+    forward_payload: Slice as remaining; // Comment Text message when Transfer the jetton
 }
 
 message(0x178d4519) InternalTransfer {
@@ -116,7 +116,7 @@ message NftDeploy {
 
 message RequestNftDeploy {
     index: Int as uint256;
-    amount: Int as coins;
+    // amount: Int as coins;
     owner: Address;
     content: Cell;
 }
@@ -140,15 +140,17 @@ message BuyToken {
     amount: Int as coins;
     custom_payload: Cell?;
     forward_ton_amount: Int as coins;
+    forward_payload: Slice as remaining; // Comment Text message when Transfer the jetton
 }
 
 message BuyTicket {
     query_id: Int as uint64;
-    amount: Int as coins;
+    // amount: Int as coins;
     destination: Address;
     response_destination: Address;
     custom_payload: Cell?;
     forward_ton_amount: Int as coins;
+    forward_payload: Slice as remaining;
     contentNft: Cell;
     value: Int as coins;
 }
