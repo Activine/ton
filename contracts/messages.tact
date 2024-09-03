@@ -116,7 +116,6 @@ message NftDeploy {
 
 message RequestNftDeploy {
     index: Int as uint256;
-    // amount: Int as coins;
     owner: Address;
     content: Cell;
 }

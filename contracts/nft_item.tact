@@ -98,9 +98,9 @@ contract NftItem with NftStandart {
     init(collection: Address, index: Int, operator: Address) {
         self.collection = collection;
         self.index = index;
-
         self.owner = self.collection;
         self.content = emptyCell();
+        dump(index);
         self.operator = self.collection;
     }
 

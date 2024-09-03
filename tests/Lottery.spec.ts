@@ -16,6 +16,8 @@ describe('Lottery', () => {
     let nftCollection: SandboxContract<NftCollection>;
     let jettonMaster: SandboxContract<TokenMaster>;
     let contentNFT: Cell;
+    const amountOfToken = toNano('100');
+    const priceForTicket = toNano('5');
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
@@ -41,6 +43,7 @@ describe('Lottery', () => {
             deploy: true,
             success: true,
         });
+
         // deploy nft collectioin
         const collectionParams = {
             image: 'https://www.pngall.com/wp-content/uploads/15/Fire-Flame-PNG-Image-HD.png',
@@ -50,11 +53,9 @@ describe('Lottery', () => {
             marketplace: 'getgems.io',
         };
         contentNFT = buildOnchainMetadata(collectionParams);
-
         nftCollection = blockchain.openContract(
             await NftCollection.fromInit(deployer.address, contentNFT, lottery.address),
         );
-
         const deployNftCollection = await nftCollection.send(
             deployer.getSender(),
             {
@@ -81,11 +82,9 @@ describe('Lottery', () => {
             image: 'https://www.pngall.com/wp-content/uploads/15/Fire-Flame-PNG-Image-HD.png',
         };
         let contentJetton = buildOnchainMetadata(jettonParams);
-
         jettonMaster = blockchain.openContract(
             await TokenMaster.fromInit(deployer.address, contentJetton, lottery.address),
         );
-
         const deployMasterJetton = await jettonMaster.send(
             deployer.getSender(),
             {
@@ -116,18 +115,19 @@ describe('Lottery', () => {
                 jettonAddress: jettonMaster.address,
             },
         );
+
         expect(setData.transactions).toHaveTransaction({
             from: deployer.address,
             to: lottery.address,
             success: true,
         });
+
         const lotteryData = await lottery.getLotteryData();
+
         expect(lotteryData.nftCollection.equals(nftCollection.address)).toBeTruthy();
         expect(lotteryData.paymentToken.equals(jettonMaster.address)).toBeTruthy();
-        // buy lottery token
-        console.log('user', await user.getBalance());
-        console.log('lottery.getBalance', await lottery.getBalance());
 
+        // buy lottery token
         const buyLotteryToken = await lottery.send(
             user.getSender(),
             { value: toNano('1.56') },
@@ -140,6 +140,9 @@ describe('Lottery', () => {
                 forward_payload: beginCell().endCell().asSlice(),
             },
         );
+
+        // console.log('List of transactions for buy token: ', buyLotteryToken.events);
+
         const userJettonAddress = await jettonMaster.getGetWalletAddress(user.address);
         const userWallet = blockchain.openContract(TokenWallet.fromAddress(userJettonAddress));
         const lotteryJettonAddress = await jettonMaster.getGetWalletAddress(lottery.address);
@@ -167,27 +170,16 @@ describe('Lottery', () => {
             lotteryWallet.address,
             '\n',
         );
-        console.log('user', await user.getBalance());
-        // console.log('buyLotteryToken.events', buyLotteryToken.events);
 
         let userWalletData = await userWallet.getGetWalletData();
-        console.log('user token balance', userWalletData.balance);
-        console.log('lottery.getBalance', await lottery.getBalance());
+        console.log('User token balance', userWalletData.balance);
+        console.log('Lottery balance (TON) after buying token', await lottery.getBalance());
 
-        await lottery.send(
-            deployer.getSender(),
-            { value: toNano('0.1') },
-            {
-                $$type: 'SetData',
-                nftAddress: nftCollection.address,
-                jettonAddress: jettonMaster.address,
-            },
-        );
-        console.log('lottery.getBalance', await lottery.getBalance());
-        // BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY
         expect(userWalletData.owner.equals(user.address)).toBeTruthy();
         expect(userWalletData.master.equals(jettonMaster.address)).toBeTruthy();
         expect(userWalletData.balance).toEqual(toNano('100'));
+
+        // buy lottery ticket
         const buyLotteryTicket = await lottery.send(
             user.getSender(),
             { value: toNano('0.31') },
@@ -203,8 +195,17 @@ describe('Lottery', () => {
                 value: 0n,
             },
         );
-        console.log('eventseventseventseventseventseventseventsevents', buyLotteryTicket.events);
-        console.log('lottery.getBalance', await lottery.getBalance());
+        const nft0Address = await nftCollection.getGetNftAddressByIndex(0n);
+        const nft0 = blockchain.openContract(NftItem.fromAddress(nft0Address));
+        let nftData0 = await nft0.getGetNftData();
+
+        console.log('Data of ticket 0: ', nftData0);
+
+        expect(nftData0.deployed).toEqual(true);
+        expect(nftData0.owner.toString()).toEqual(user.address.toString());
+        expect((await lotteryWallet.getGetWalletData()).balance).toEqual(priceForTicket);
+
+        // console.log('List of transactions for buy ticket: ', buyLotteryTicket.events);
         const buyLotteryTicket1 = await lottery.send(
             user.getSender(),
             { value: toNano('0.31') },
@@ -280,27 +281,11 @@ describe('Lottery', () => {
                 value: 0n,
             },
         );
-        // console.log(buyLotteryTicket.events);
-        console.log('lottery.getBalance', await lottery.getBalance());
-        2209728798n;
-        1498090800n;
-        userWalletData = await userWallet.getGetWalletData();
-        let lotteryWalletData = await lotteryWallet.getGetWalletData();
-        const nft0Address = await nftCollection.getGetNftAddressByIndex(0n);
-        const nft0 = blockchain.openContract(NftItem.fromAddress(nft0Address));
-        let nftData0 = await nft0.getGetNftData();
-        // const nft1Address = await nftCollection.getGetNftAddressByIndex(1n);
-        // const nft1 = blockchain.openContract(NftItem.fromAddress(nft1Address));
-        // let nftData1 = await nft1.getGetNftData();
-        console.log('nftData0', nftData0);
-        console.log('nftData0Address', nft0.address);
-        console.log('getBalance', await nft0.getBalance());
-        console.log('get balance collection', await nftCollection.getBalance());
 
-        // console.log('nftData1', nftData1);
-        // console.log('lottery status', await nft0.getLotteryData());
-        console.log('userWalletData.balance', userWalletData.balance);
-        console.log('lotteryWalletData.balance', lotteryWalletData.balance);
+        console.log('Lottery balance (Jetton) after buying tickets', (await lotteryWallet.getGetWalletData()).balance);
+        console.log('User balance (Jetton) after buying tickets', (await userWallet.getGetWalletData()).balance);
+
+        // check ticket
         const checkTicket = await lottery.send(
             user.getSender(),
             { value: toNano('0.1') },
@@ -319,10 +304,9 @@ describe('Lottery', () => {
                 index: 1n,
             },
         );
-        console.log(checkTicket.events);
+        // console.log('List of transactions for check ticket: ', checkTicket.events);
         console.log('lottery status nft0', await nft0.getLotteryData());
-        // console.log('userWalletData.balance', userWalletData.balance);
-        // console.log('lotteryWalletData.balance', lotteryWalletData.balance);
+
         const claimReward = await lottery.send(
             user.getSender(),
             { value: toNano('0.5') },
@@ -332,19 +316,10 @@ describe('Lottery', () => {
                 index: 0n,
             },
         );
-        console.log(claimReward.events);
-        // const claimReward2 = await lottery.send(
-        //     user.getSender(),
-        //     { value: toNano('0.2') },
-        //     {
-        //         $$type: 'ClaimReward',
-        //         query_id: 0n,
-        //         index: 0n,
-        //     },
-        // );
-        // // console.log(claimReward2.events);
+        // console.log('List of transactions for claim rewards: ', checkTicket.events);
+
         userWalletData = await userWallet.getGetWalletData();
-        lotteryWalletData = await lotteryWallet.getGetWalletData();
+        let lotteryWalletData = await lotteryWallet.getGetWalletData();
         console.log('lottery status nft0', await nft0.getLotteryData());
         console.log('userWalletData.balance', userWalletData.balance);
         console.log('lotteryWalletData.balance', lotteryWalletData.balance);
@@ -361,7 +336,8 @@ describe('Lottery', () => {
             },
         );
 
-        console.log(withdraw.events);
+        // console.log('List of transactions for withdraw (TON) from the lottery contract: ', withdraw.events);
+
         console.log('lottery.getBalance', await lottery.getBalance());
         console.log('deployer', await deployer.getBalance());
     });
