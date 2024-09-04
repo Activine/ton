@@ -7,9 +7,7 @@
 -   `tests` - tests for the contracts.
 -   `scripts` - scripts used by the project, mainly the deployment scripts.
 
-# Project Description
-
-## Overview
+## Project Description
 
 This project involves a sophisticated smart contract system on the TON blockchain that supports token management, NFT issuance, and a lottery mechanism. The system comprises several interconnected contracts, each fulfilling specific roles, including a master contract for token management, a wallet contract for token handling, and contracts dedicated to NFT collections, items, and a lottery mechanism.
 
