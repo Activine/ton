@@ -1,4 +1,4 @@
-# Jetton
+# Lottery
 
 ## Project structure
 
@@ -7,7 +7,50 @@
 -   `tests` - tests for the contracts.
 -   `scripts` - scripts used by the project, mainly the deployment scripts.
 
+# Project Description
+
+## Overview
+
+This project involves a sophisticated smart contract system on the TON blockchain that supports token management, NFT issuance, and a lottery mechanism. The system comprises several interconnected contracts, each fulfilling specific roles, including a master contract for token management, a wallet contract for token handling, and contracts dedicated to NFT collections, items, and a lottery mechanism.
+
+## Contract System
+
+The smart contract system consists of several key contracts:
+
+### TokenMaster Contract
+
+-   **Role:** Acts as the central authority for managing the token ecosystem. It handles minting, burning, and transferring tokens while ensuring proper authorization through owner and operator roles.
+-   **Functions:** Manages total supply, allows for updating token content, and provides wallet addresses for token holders.
+
+### TokenWallet Contract
+
+-   **Role:** Manages individual token balances and facilitates transfers between addresses. It ensures security and correctness in token movements by checking sender authorization and balance validity.
+-   **Functions:** Handles token transfers, burning, and sending excess tokens back to the sender or other specified addresses.
+
+### NftCollection Contract
+
+-   **Role:** Manages the issuance of NFTs, acting as the central repository for NFT items within a collection. It allows authorized users to deploy new NFTs based on a predefined index.
+-   **Functions:** Issues NFTs, keeps track of the next available index for new items, and retrieves NFT addresses and content based on index.
+
+### NftItem Contract
+
+-   **Role:** Represents individual NFT items within a collection. It tracks ownership, content, and can participate in the platform’s lottery mechanism.
+-   **Functions:** Manages NFT transfers, destruction, and interaction with the lottery system. It stores and provides information about the NFT’s lottery status and reward claims.
+
+### Lottery Contract
+
+-   **Role:** Facilitates the lottery mechanism within the platform. It enables users to purchase lottery tickets using platform tokens and participate in randomized draws, with the potential to win rewards.
+-   **Functions:** Manages ticket sales, conducts random draws, determines winners, and distributes rewards. It also interacts with NftItem contracts to update and track the lottery status of NFTs, including the recording of winning numbers and reward claims.
+
+---
+
+This description includes the Lottery contract and highlights its role and functions within the overall contract system.
+
 ## How to use
+
+### Install node_modules
+
+`npm i` or `yarn install`
 
 ### Build
 
